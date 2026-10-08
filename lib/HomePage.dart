@@ -8,46 +8,58 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final series = context.watch<SeriesProvider>().seriesData;
+    final provider = context.watch<SeriesProvider>();
+    final series = provider.seriesData;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Popular TV Series')),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(8),
-        itemCount: series.length,
-        itemBuilder: (context, index) {
-          final serie = series[index];
-          return GestureDetector(
-            onTap: () {
-              context.read<SeriesProvider>().select(serie);
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const DetailsPage()),
-              );
-            },
-            child: Card(
-              clipBehavior: Clip.antiAlias,
-              child: Column(
-                children: [
-                  Image.asset(
-                    serie.image,
-                    height: 180,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Text(
-                      serie.title,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      ),
+      body: provider.isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : series.isEmpty
+              ? const Center(child: Text('Could not load movies'))
+              : ListView.builder(
+                  padding: const EdgeInsets.all(8),
+                  itemCount: series.length,
+                  itemBuilder: (context, index) {
+                    final serie = series[index];
+                    return GestureDetector(
+                      onTap: () {
+                        context.read<SeriesProvider>().select(serie);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => const DetailsPage()),
+                        );
+                      },
+                      child: Card(
+                        clipBehavior: Clip.antiAlias,
+                        child: Column(
+                          children: [
+                            Image.network(
+                              serie.image,
+                              height: 200,
+                              width: double.infinity,
+                              fit: BoxFit.fill,
+                              errorBuilder: (context, error, stack) =>
+                                  const SizedBox(
+                                height: 200,
+                                child: Icon(Icons.broken_image),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Text(
+                                serie.title,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
     );
   }
 }

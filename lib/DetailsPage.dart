@@ -11,22 +11,27 @@ class DetailsPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(title: Text(serie.title), centerTitle: true),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(16),
-              child: Image.asset(
+              child: Image.network(
                 serie.image,
-                height: 250,
+                height: 350,
                 width: double.infinity,
-                fit: BoxFit.cover,
+                fit: BoxFit.fill,
+                errorBuilder: (context, error, stack) => const SizedBox(
+                  height: 350,
+                  child: Icon(Icons.broken_image, size: 60),
+                ),
               ),
             ),
             const SizedBox(height: 20),
             Text(
               serie.title,
+              textAlign: TextAlign.center,
               style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 12),

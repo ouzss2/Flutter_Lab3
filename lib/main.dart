@@ -7,7 +7,7 @@ import 'SeriesProvider.dart';
 void main() {
   runApp(
     ChangeNotifierProvider(
-      create: (_) => SeriesProvider(),
+      create: (_) => SeriesProvider()..fetchSeries(),
       child: const MyApp(),
     ),
   );
